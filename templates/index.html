@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+    <head>
+        <!-- Metadata -->
+        <title>wetter.pennynet.info</title>
+
+        <!-- CSS & Scripts -->
+        <link rel="stylesheet" href="{{ url_for('static', filename='css/main.css') }}">
+
+        <!-- CDN-provided scripts -->
+        <!-- JQuery 3.6.0 
+        <script 
+            src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"
+        ></script> -->
+        <!-- ChartJS 3.8.0 -->   
+        <script 
+            src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/3.8.0/chart.min.js" 
+            integrity="sha512-sW/w8s4RWTdFFSduOTGtk4isV1+190E/GghVffMA9XczdJ2MDzSzLEubKAs5h0wzgSJOQTRYyaz73L3d6RtJSg==" 
+            crossorigin="anonymous" 
+            referrerpolicy="no-referrer"
+        ></script>
+
+        
+    </head>
+    <body>
+        <script>
+            $SCRIPT_ROOT = {{ request.script_root|tojson }}; 
+            var sensorIDs = {{ sensorTiles|tojson }};
+            console.log(sensorIDs)
+            var sensorTileData = {{ sensorTileData|tojson }};
+            sensorTileData = JSON.parse(sensorTileData)
+            var minMaxTimestamps = {{ minMaxTimestamps|tojson }};
+            minMaxTimestamps = JSON.parse(minMaxTimestamps)
+            console.log(minMaxTimestamps);
+        </script>
+        <container class = "main">
+            <div class = "center">
+                <div class = "left" >                    
+                    <div class = "left-header">
+                        <div class="pennynet-link-container"><a href="https://wetter.pennynet.info" style="text-decoration: none;"><p class="pennynet-link">pennynet</p></a></div>
+                        <h1>Wetter</h1>
+                        <p id = "date"></p>
+                    </div>
+
+                    <div class = "tiles">
+
+                        {% for sensorID in sensorTiles %}                     
+                        <div class ="sensor-tile" id="{{ sensorID }}">
+                            <p class ="sensor-tile-name">{{ sensorID }}</p>
+                            <div class = "sensor-tile-data-container">
+                                <img src="{{ url_for('static', filename='icons/thermostat.svg') }}" />
+                                <p class = "sensor-tile-data temp {{sensorID}}"> &#176;C</p>
+                                <div class = "seperator"></div>
+                                <img src="{{ url_for('static', filename='icons/water-drop.svg') }}" />
+                                <p class = "sensor-tile-data humid {{sensorID}}" style="margin-left: -5px;">&#037;</p>
+                            </div>
+                        </div>
+                        {% endfor %}
+                       
+                    </div>    
+                </div>
+
+                <div class = "right" >
+                    <container class = "right-container">
+                        <!--<div class = "right-header">
+                            
+                            <div class = "city-temp">
+                            </div>
+                            <div class = "city-temp">
+
+                            </div>
+                        </div>-->
+
+
+                        <div class = "graph-tile">
+                            <div class = "graph-name"><h3>Temperatur</h3></div>
+
+                            <div class ="graph-container">
+                                <canvas id="temp"></canvas>
+                            </div>
+                        </div>
+
+                        <div class ="graph-selection-container">
+                            <div class = "graph-selection-tile">
+                                <div class = "graph-selection">
+                                    <div class = "graph-selector now" id = "now"><p class ="selector-content">Jetzt</p></div>
+                                    <div class = "graph-selector lastDay" id ="lastDay"><p class ="selector-content">letzte 24h</p></div>
+                                    <div class = "graph-selector anyDay" id = "anyDay"><p class ="selector-content">1 Tag</p></div>
+                                    <div class = "graph-selector week" id = "week"><p class ="selector-content">1 Woche</p></div>                                    
+                                </div>
+
+                                <div class = "period-selection-hide period-selection">
+                                    <div class = "period-selection-date">                                        
+                                        <input id="startDate"
+                                            class = "date-selector" 
+                                            type = "date"
+                                            value="2022-01-01"
+                                        >
+                                    </div>
+                                    <div class = "period-selection-date">
+                                        <input id="endDate"
+                                            class = "date-selector" 
+                                            type = "date"
+                                            value="2022-03-01"
+                                        >
+                                    </div>
+                                    <div class = "time-selector-submit"><p class ="selector-content">OK</p></div>
+                                </div>
+                            </div>
+                            <!--<div class = "graph-settings-tile">
+                                <div class = "graph-settings">
+                                    <div class = "graph-setting mittelwert">Mittelwert</div>
+                                </div>
+                            </div>-->
+                        </div>
+
+
+                        <div class = "graph-tile">
+                            <div class = "graph-name"><h3>Feuchtigkeit</h3></div>
+                            
+                            <div class ="graph-container">
+                                <canvas id="humid"></canvas>
+                            </div>
+                        </div>
+                        <div class = "right-bottom">
+                        
+                        </div>
+                        </div>
+
+
+                    </container>
+                </div>
+            </div>
+        </container>
+        <script src="{{ url_for('static', filename='app.js') }}"></script>
+    </body>

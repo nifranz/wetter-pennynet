@@ -1,0 +1,27 @@
+SELECT 
+    black.temp,
+    black.hum,
+    white.temp,
+    white.hum,
+
+SELECT *
+FROM
+    (
+        SELECT ROW_NUMBER() OVER(ORDER BY time ASC) ROWNO,temp,hum
+        FROM black
+    )black
+JOIN
+    (
+        SELECT ROW_NUMBER() OVER(ORDER BY time ASC) ROWNO,temp,hum
+        FROM white
+    )white 
+ON 
+    black.ROWNO=white.ROWNO
+JOIN
+    (
+        SELECT ROW_NUMBER() OVER(ORDER BY time ASC) ROWNO,temp,hum
+        FROM taster 
+    )taster
+ON black.ROWNO=taster.ROWNO;
+
+SELECT black.hum AS black.hum,black.temp,white.hum,white.temp FROM (SELECT ROW_NUMBER() OVER(ORDER BY time ASC) ROWNO,temp,hum FROM black)black JOIN (SELECT ROW_NUMBER() OVER(ORDER BY time ASC) ROWNO,temp,hum FROM white)white ON black.ROWNO=white.ROWNO LIMIT 1;
